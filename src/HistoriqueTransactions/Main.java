@@ -10,7 +10,7 @@ public class Main {
         System.out.println("################################# UTILISATION DE TREESET #################################\n");
 
         System.out.println("--------------- Génération des données ---------------"); //################################
-        HistoriqueTreeSet historique = Benchmark.donneesTreeSet(10000);
+        HistoriqueTreeSet historique = Benchmark.donneesTreeSet(taille);
         System.out.println("Les données ont été générées.\n");
 
 
