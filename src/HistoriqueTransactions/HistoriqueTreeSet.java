@@ -29,18 +29,14 @@ public class HistoriqueTreeSet implements IHistorique{
     public void annulerTransaction(String id) throws HistoriqueException{
         Iterator<Transaction> iterateur = transactions.iterator();
 
-        long debut = System.nanoTime();
         while (iterateur.hasNext()){
             Transaction t = iterateur.next();
             if (t.getId().equals(id)){
                 iterateur.remove();
-                System.out.println("La transaction a été supprimée.");
                 return;
             }
 
         }
-        long fin = System.nanoTime();
-        System.out.println("Temps de suppression : " + (fin-debut)*1e-6 + " ms.");
         throw new HistoriqueException("La transaction n'existe pas.");
     }
 
