@@ -5,12 +5,12 @@ import java.time.LocalDate;
 public class GenerateurDonnees {
 
     //Génération des données avec TreeSet ------------------------------------------------------------------------------
-    public static HistoriqueTreeSet generer(){
+    public static HistoriqueTreeSet generer(int taille){
 
         HistoriqueTreeSet historique = new HistoriqueTreeSet();
         LocalDate now = LocalDate.now();
 
-        for (int i = 1; i <= 10000; i++) {
+        for (int i = 1; i <= taille; i++) {
 
             LocalDate date = now.plusDays(i);
             String type = (i % 2 == 0) ? "Achat" : "Vente";
