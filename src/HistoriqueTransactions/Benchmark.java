@@ -93,7 +93,6 @@ public class Benchmark {
         System.out.println("Répartition : " + pAdd + "% ajout, " + pAnnuler + "% annulation, " + pRechercheId + "% recherche, "
                             + pParcoursChrono + "% parcours et " + pComptage + "% comptage.");
 
-
         for (int i = 0; i < nbOperations; i++) {
             double random = Math.random() * 100;
 
@@ -116,8 +115,6 @@ public class Benchmark {
 
 
     }
-
-
 
 
 
@@ -153,7 +150,6 @@ public class Benchmark {
                 try {
                     historique.rechercheId(idAleatoire);
                 } catch (HistoriqueException e) {
-                    // On ignore l'erreur, on veut juste mesurer le temps
                 }
             }
 
@@ -182,4 +178,36 @@ public class Benchmark {
             long memoireUtilisee = runtime.totalMemory() - runtime.freeMemory();
             System.out.println("> Occupation Mémoire estimée : " + (memoireUtilisee / (1024 * 1024)) + " Mo");
         }
+
+
+    //############################################## SCENARIOS #########################################################
+
+    public static void scenarioMap(HistoriqueTreeMap h, int nbOperations, int pAdd, int pAnnuler, int pRechercheId, int pParcoursChrono, int pComptage) {
+        System.out.println("\n--- SCÉNARIO TREEMAP (" + nbOperations + " opérations) ---");
+        System.out.println("Répartition : " + pAdd + "% ajout, " + pAnnuler + "% annulation, " + pRechercheId + "% recherche, "
+                + pParcoursChrono + "% parcours et " + pComptage + "% comptage.");
+
+        for (int i = 0; i < nbOperations; i++) {
+            double random = Math.random() * 100;
+
+            if (random < pAdd) {
+                try { h.addTransaction(new Transaction("NEW_" + i, LocalDate.now(), "Achat", 100.0)); } catch (HistoriqueException e){}
+            }
+            else if (random < pAdd + pAnnuler) {
+                // Utilisation de (int) pour avoir un ID entier cohérent
+                try { h.annulerTransaction("ID_" + (int)(Math.random() * 1000)); } catch(Exception e){}
+            }
+            else if (random < pAdd + pAnnuler + pRechercheId) {
+                try { h.rechercheId("ID_" + (int)(Math.random() * 1000)); } catch(Exception e){}
+            }
+            else if (random < pAdd + pAnnuler + pRechercheId + pParcoursChrono) {
+                h.parcoursChronologique(LocalDate.now(), LocalDate.now().plusDays(10));
+            }
+            else {
+                h.comptageType("Vente");
+            }
+        }
+    }
+
+
     }
