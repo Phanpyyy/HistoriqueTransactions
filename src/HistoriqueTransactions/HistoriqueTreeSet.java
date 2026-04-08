@@ -16,6 +16,7 @@ public class HistoriqueTreeSet implements IHistorique{
 
     //Méthodes ---------------------------------------------------------------------------------------------------------
     //Ajout d'une transaction
+    @Override
     public void addTransaction(Transaction t) throws HistoriqueException{
         if (transactions.contains(t)){
             throw new HistoriqueException("La transaction existe déjà.");
@@ -26,6 +27,7 @@ public class HistoriqueTreeSet implements IHistorique{
     }
 
     //Suppression d'une transaction
+    @Override
     public void annulerTransaction(String id) throws HistoriqueException{
         Iterator<Transaction> iterateur = transactions.iterator();
 
@@ -45,6 +47,7 @@ public class HistoriqueTreeSet implements IHistorique{
     }
 
     //Recherche d'une transaction par son id
+    @Override
     public Transaction rechercheId(String id) throws HistoriqueException{
         for (Transaction t : transactions){
             if (t.getId().equals(id)){
@@ -55,6 +58,7 @@ public class HistoriqueTreeSet implements IHistorique{
     }
 
     //Renvoi des transactions situées entre les deux dates passées en paramètre
+    @Override
     public ArrayList<Transaction> parcoursChronologique(LocalDate dateD, LocalDate dateF){
         ArrayList<Transaction> transactionChrono = new ArrayList<>();
         for (Transaction t : transactions){
@@ -69,6 +73,7 @@ public class HistoriqueTreeSet implements IHistorique{
     }
 
     //Compte le nombre de transactions du type passé en paramètre
+    @Override
     public int comptageType(String type){
         int compteur = 0;
         for (Transaction t : transactions){
