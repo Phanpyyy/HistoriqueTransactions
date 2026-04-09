@@ -30,12 +30,9 @@ public class HistoriqueTreeMap implements IHistorique {
     //Suppression d'une transaction
     @Override
     public void annulerTransaction(String id) throws HistoriqueException {
-        long debut = System.nanoTime();
 
         // Pas besoin d'itérateur ! .remove(id) le fait instantanément
         if (transactionTreeMap.remove(id) != null) {
-            long fin = System.nanoTime();
-            System.out.println("Temps de suppression : " + (fin - debut) * 1e-6 + " ms.");
         } else {
             throw new HistoriqueException("La transaction n'existe pas.");
         }
