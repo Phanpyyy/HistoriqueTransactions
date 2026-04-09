@@ -1,5 +1,6 @@
 package HistoriqueTransactions;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -139,9 +140,9 @@ public class Main {
 
 
 
-        //##################################################################################################################
-        //############################################## TREEMAP ###########################################################
-        //##################################################################################################################
+        //##############################################################################################################
+        //############################################## TREEMAP #######################################################
+        //##############################################################################################################
 
 
         System.out.println("\n\n################################# TEST : HISTORIQUE TREEMAP #################################\n");
@@ -205,6 +206,13 @@ public class Main {
 
         //Scénario trading (beaucoup d'ajouts)
         System.out.println("\n###################### SCENARIO TRADING #####################");
+/*
+        //##############################################################################################################
+        //######################################## SCENARIOS TREEMAP ###################################################
+        //##############################################################################################################
+
+       // Scénario trading (beaucoup d'ajouts)
+        System.out.println("\n###################### SCENARIO TRADING (TREEMAP) #####################");
         for (int n : tailles) {
             System.out.println("\n########### TAILLE N = " + n + " ############");
             long duree = 0;
@@ -226,6 +234,22 @@ public class Main {
 
         //Scénario Audit (beaucoup de vérifications)
         System.out.println("\n###################### SCENARIO AUDIT #####################");
+                // Utilisation de ton générateur pour TreeMap
+                HistoriqueTreeMap treeMap = GenerateurDonnees.genererMap();
+
+                long debut = System.nanoTime();
+                // On passe l'historique TreeMap au même scénario
+                Benchmark.scenario(tMap, 1000, 70, 2, 15, 10, 3);
+                long fin = System.nanoTime();
+
+                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
+                duree += (fin - debut);
+            }
+            System.out.println("\nTemps moyen du scénario TreeMap (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
+        }
+
+        // Scénario Audit (beaucoup de vérifications/recherches)
+        System.out.println("\n###################### SCENARIO AUDIT (TREEMAP) #####################");
         for (int n : tailles) {
             System.out.println("\n########### TAILLE N = " + n + " ############");
             long duree = 0;
@@ -340,6 +364,97 @@ public class Main {
 //            System.out.println("Confirmation de sécurité : " + e.getMessage());
 //        }
 //
+
+                HistoriqueTreeMap treeMap = GenerateurDonnees.genererMap();
+
+                long debut = System.nanoTime();
+                // Ici, le TreeMap devrait être nettement plus performant (recherche en O(log n))
+                Benchmark.scenario(treeMap, 1000, 5, 1, 20, 34, 40);
+                long fin = System.nanoTime();
+
+                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
+                duree += (fin - debut);
+            }
+            System.out.println("\nTemps moyen du scénario TreeMap (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
+        }
+
+        // Scénario e-commerce (consultations de commandes)
+        System.out.println("\n###################### SCENARIO E-COMMERCE (TREEMAP) #####################");
+        for (int n : tailles) {
+            System.out.println("\n########### TAILLE N = " + n + " ############");
+            long duree = 0;
+            for (int r = 1; r <= repetitions; r++) {
+                System.out.println("\n--- Répétition n°" + r + " ---");
+
+                HistoriqueTreeMap treeMap = GenerateurDonnees.genererMap();
+
+                long debut = System.nanoTime();
+                Benchmark.scenario(treeMap, 1000, 25, 10, 30, 25, 10);
+                long fin = System.nanoTime();
+
+                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
+                duree += (fin - debut);
+            }
+            System.out.println("\nTemps moyen du scénario TreeMap (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
+        }*/
+
+        int[] tailles2 = {1000, 10000, 50000};
+
+        // 1. Tes carnets de notes (vides au début)
+        ArrayList<Integer> resultatsTailles = new ArrayList<>();
+        ArrayList<Long> resultatsTempsSet = new ArrayList<>();
+        ArrayList<Long> resultatsTempsMap = new ArrayList<>();
+
+
+        // --- TEST TREESET ---
+        System.out.println("### BENCHMARK TREESET ###");
+        for (int n : tailles2) {
+            long dureeCumulee = 0;
+            for (int r = 1; r <= repetitions; r++) {
+                HistoriqueTreeSet h = GenerateurDonnees.generer(n);
+                long debut = System.nanoTime();
+
+                // On choisit le scénario AUDIT (le plus représentatif pour le TreeMap)
+                Benchmark.scenario(h, 1000, 5, 1, 20, 34, 40);
+
+                long fin = System.nanoTime();
+                dureeCumulee += (fin - debut);
+            }
+            // ON REMPLIT LES LISTES ICI
+            long moyenne = dureeCumulee / repetitions;
+            resultatsTailles.add(n);
+            resultatsTempsSet.add(moyenne);
+
+            System.out.println("Moyenne TreeSet (N=" + n + ") : " + (moyenne * 1e-6) + " ms");
+        }
+
+        // --- TEST TREEMAP ---
+        System.out.println("\n### BENCHMARK TREEMAP ###");
+        for (int n : tailles2) {
+            long dureeCumulee = 0;
+            for (int r = 1; r <= repetitions; r++) {
+                HistoriqueTreeMap hMap = GenerateurDonnees.genererMap();
+                long debut = System.nanoTime();
+
+                // Même scénario exact !
+                Benchmark.scenarioMap(hMap, 1000, 5, 1, 20, 34, 40);
+
+                long fin = System.nanoTime();
+                dureeCumulee += (fin - debut);
+            }
+            // ON REMPLIT LES LISTES ICI
+            long moyenneMap = dureeCumulee / repetitions;
+            resultatsTempsMap.add(moyenneMap);
+
+            System.out.println("Moyenne TreeMap (N=" + n + ") : " + (moyenneMap * 1e-6) + " ms");
+        }
+
+        // 3. AFFICHAGE DU GRAPHIQUE
+        SwingUtilities.invokeLater(() -> {
+            Graphe graphe = new Graphe(resultatsTempsSet, resultatsTempsMap, resultatsTailles);
+            graphe.setVisible(true);
+        });
+
 
         System.out.println("\n################################# FIN DES TESTS #################################");
     }
