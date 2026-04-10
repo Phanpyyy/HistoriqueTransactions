@@ -1,32 +1,50 @@
 package HistoriqueTransactions;
 
 import javax.swing.*;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.TreeSet;
 
 public class Main {
     public static void main(String[] args) {
-
+        ArrayList<String> nomOperation = new ArrayList<String>(Arrays.asList(
+                "Génération des données",
+                "Ajout d'une transaction",
+                "Comptage par type",
+                "Recherche par identifiant",
+                "Parcours chronologique",
+                "Suppression d'une transaction"
+        ));
         //##################################################################################################################
         //############################################## TREESET ###########################################################
         //##################################################################################################################
-
         int taille = 10000;
+        ArrayList<Double> calculTempsTreeSet = new ArrayList<Double>();
+        ArrayList<Double> calculMemoireTreeSet = new ArrayList<Double>();
 
         System.out.println("################################# UTILISATION DE TREESET #################################\n");
 
         System.out.println("--------------- Génération des données ---------------"); //################################
-        IHistorique historiqueTreeSet = Benchmark.donnees(taille, new HistoriqueTreeSet());
+        ResultatBenchmark res = Benchmark.donnees(taille, new HistoriqueTreeSet());
+        IHistorique historiqueTreeSet = res.getHistorique();
         System.out.println("Les données ont été générées.\n");
 
+        //Ajout du temps de calcul et mémoire dans les listes
+        calculTempsTreeSet.add(res.getTempsGenerationDonnees());
+        calculTempsTreeSet.add(res.getCalculTemps());
+        calculMemoireTreeSet.add(res.getCalculMemoireGenerationDonnees());
+        calculMemoireTreeSet.add(res.getCalculMemoire());
 
         System.out.println("--------------- Test des méthodes ---------------"); //#####################################
 
 
         System.out.println("----- Test méthode comptage -----"); //------------------------------------------------
         //Calcul temps
-        Benchmark.tempsComptage(historiqueTreeSet, "Achat", taille);
+        res = Benchmark.tempsComptage(historiqueTreeSet, "Achat", taille);
+        calculTempsTreeSet.add(res.getCalculTemps());
+        calculMemoireTreeSet.add(res.getCalculMemoire());
         //Affichage
         System.out.println("Nombre de transaction type Achat : " + historiqueTreeSet.comptageType("Achat"));
 
@@ -34,29 +52,35 @@ public class Main {
         System.out.println("\n----- Test méthode recherche par id -----"); //----------------------------------------------------
 
         //Calcul temps
-        Benchmark.tempsRechercheId(historiqueTreeSet, taille);
+        res = Benchmark.tempsRechercheId(historiqueTreeSet, taille);
         //Affichage
         try {
             System.out.println(historiqueTreeSet.rechercheId("ID_8"));
         } catch (HistoriqueException e) {
             System.err.println("ERREUR : " + e.getMessage());
         }
-
+        calculTempsTreeSet.add(res.getCalculTemps());
+        calculMemoireTreeSet.add(res.getCalculMemoire());
 
         System.out.println("------ Test méthode parcours chronologique ------"); //-------------------------------------
 
         //Calcul temps
-        Benchmark.tempsParcoursChronologique(historiqueTreeSet, taille);
+        res = Benchmark.tempsParcoursChronologique(historiqueTreeSet, taille);
         //Affichage
         LocalDate dateD = LocalDate.of(2026, 7, 3);
         LocalDate dateF = LocalDate.of(2026, 7, 6);
         System.out.println(historiqueTreeSet.parcoursChronologique(dateD, dateF));
 
+        calculTempsTreeSet.add(res.getCalculTemps());
+        calculMemoireTreeSet.add(res.getCalculMemoire());
 
         System.out.println("\n----- Test méthode suppression transaction -----"); //------------------------------------
 
         //Calcul temps
-        Benchmark.tempsAnnulerTransaction(historiqueTreeSet, taille - 1);
+        res = Benchmark.tempsAnnulerTransaction(historiqueTreeSet, taille - 1);
+
+        calculTempsTreeSet.add(res.getCalculTemps());
+        calculMemoireTreeSet.add(res.getCalculMemoire());
         //Affichage
 //        try {
 //            System.out.println(historique.rechercheId("ID_" + taille));
@@ -66,93 +90,54 @@ public class Main {
 //            System.err.println("ERREUR : " + e.getMessage());
 //        }
 
-
+        //##############################################################################################################
         //############################################### SCENARIOS ####################################################
+        //##############################################################################################################
+
         int[] tailles = {1000, 5000, 10000};
         int repetitions = 5;
 
         //Scénario trading (beaucoup d'ajouts)
         System.out.println("\n###################### SCENARIO TRADING #####################");
-        for (int n : tailles) {
-            System.out.println("\n########### TAILLE N = " + n + " ############");
-            long duree = 0;
-            for (int r = 1; r <= repetitions; r++) {
-                System.out.println("\n--- Répétition n°" + r + " ---");
+        Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, 1000, 70, 2, 15, 10, 3);
 
-                IHistorique h = GenerateurDonnees.generer(n, new HistoriqueTreeSet());
-
-                long debut = System.nanoTime();
-                Benchmark.scenario(h, 1000, 70, 2, 15, 10, 3);
-                long fin = System.nanoTime();
-                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
-                duree = duree + (fin - debut);
-            }
-
-            System.out.println("\nTemps moyen du scénario (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
-
-        }
 
         //Scénario Audit (beaucoup de vérifications)
         System.out.println("\n###################### SCENARIO AUDIT #####################");
-        for (int n : tailles) {
-            System.out.println("\n########### TAILLE N = " + n + " ############");
-            long duree = 0;
-            for (int r = 1; r <= repetitions; r++) {
-                System.out.println("\n--- Répétition n°" + r + " ---");
+        Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, 1000, 5, 1, 20, 34, 40);
 
-                IHistorique h = GenerateurDonnees.generer(n, new HistoriqueTreeSet());
-
-                long debut = System.nanoTime();
-                Benchmark.scenario(h, 1000, 5, 1, 20, 34, 40);
-                long fin = System.nanoTime();
-                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
-                duree = duree + (fin - debut);
-            }
-
-            System.out.println("\nTemps moyen du scénario (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
-
-        }
 
         //Scénario e-commerce (consulte les commandes)
         System.out.println("\n###################### SCENARIO E-COMMERCE #####################");
-        for (int n : tailles) {
-            System.out.println("\n########### TAILLE N = " + n + " ############");
-            long duree = 0;
-            for (int r = 1; r <= repetitions; r++) {
-                System.out.println("\n--- Répétition n°" + r + " ---");
-
-                IHistorique h = GenerateurDonnees.generer(n, new HistoriqueTreeSet());
-
-                long debut = System.nanoTime();
-                Benchmark.scenario(h, 1000, 25, 10, 30, 25, 10);
-                long fin = System.nanoTime();
-                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
-                duree = duree + (fin - debut);
-            }
-
-            System.out.println("\nTemps moyen du scénario (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
-
-        }
+        Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, 1000, 25, 10, 30, 25, 10);
 
 
         //##############################################################################################################
         //############################################## TREEMAP #######################################################
         //##############################################################################################################
-
+        ArrayList<Double> calculTempsTreeMap = new ArrayList<>();
+        ArrayList<Double> calculMemoireTreeMap = new ArrayList<>();
 
         System.out.println("\n\n################################# TEST : HISTORIQUE TREEMAP #################################\n");
 
         System.out.println("--------------- Génération des données ---------------"); //################################
-        IHistorique historiqueTreeMap = Benchmark.donnees(taille, new HistoriqueTreeMap());
+        res = Benchmark.donnees(taille, new HistoriqueTreeMap());
+        IHistorique historiqueTreeMap = res.getHistorique();
         System.out.println("Les données ont été générées.\n");
 
+        calculTempsTreeMap.add(res.getTempsGenerationDonnees());
+        calculTempsTreeMap.add(res.getCalculTemps());
+        calculMemoireTreeMap.add(res.getCalculMemoireGenerationDonnees());
+        calculMemoireTreeMap.add(res.getCalculMemoire());
 
         System.out.println("--------------- Test des méthodes ---------------"); //#####################################
 
 
         System.out.println("----- Test méthode comptage -----"); //------------------------------------------------
         //Calcul temps
-        Benchmark.tempsComptage(historiqueTreeMap, "Achat", taille);
+        res = Benchmark.tempsComptage(historiqueTreeMap, "Achat", taille);
+        calculTempsTreeMap.add(res.getCalculTemps());
+        calculMemoireTreeMap.add(res.getCalculMemoire());
         //Affichage
         System.out.println("Nombre de transaction type Achat : " + historiqueTreeMap.comptageType("Achat"));
 
@@ -160,7 +145,9 @@ public class Main {
         System.out.println("\n----- Test méthode recherche par id -----"); //----------------------------------------------------
 
         //Calcul temps
-        Benchmark.tempsRechercheId(historiqueTreeMap, taille);
+        res = Benchmark.tempsRechercheId(historiqueTreeMap, taille);
+        calculTempsTreeMap.add(res.getCalculTemps());
+        calculMemoireTreeMap.add(res.getCalculMemoire());
         //Affichage
         try {
             System.out.println(historiqueTreeMap.rechercheId("ID_8"));
@@ -172,7 +159,9 @@ public class Main {
         System.out.println("------ Test méthode parcours chronologique ------"); //-------------------------------------
 
         //Calcul temps
-        Benchmark.tempsParcoursChronologique(historiqueTreeMap, taille);
+        res = Benchmark.tempsParcoursChronologique(historiqueTreeMap, taille);
+        calculTempsTreeMap.add(res.getCalculTemps());
+        calculMemoireTreeMap.add(res.getCalculMemoire());
         //Affichage
         dateD = LocalDate.of(2026, 7, 3);
         dateF = LocalDate.of(2026, 7, 6);
@@ -182,7 +171,9 @@ public class Main {
         System.out.println("\n----- Test méthode suppression transaction -----"); //------------------------------------
 
         //Calcul temps
-        Benchmark.tempsAnnulerTransaction(historiqueTreeMap, taille - 1);
+        res = Benchmark.tempsAnnulerTransaction(historiqueTreeMap, taille - 1);
+        calculTempsTreeMap.add(res.getCalculTemps());
+        calculMemoireTreeMap.add(res.getCalculMemoire());
         //Affichage
 //        try {
 //            System.out.println(historique.rechercheId("ID_" + taille));
@@ -195,71 +186,68 @@ public class Main {
 
         //############################################### SCENARIOS ####################################################
 
+        //Scenario Trading (beaucoup d'ajouts)
+        System.out.println("\n###################### SCENARIO TRADING #####################");
+        Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, 1000, 70, 2, 15, 10, 3);
 
-        // Scénario trading (beaucoup d'ajouts)
-        System.out.println("\n###################### SCENARIO TRADING (TREEMAP) #####################");
-        for (int n : tailles) {
-            System.out.println("\n########### TAILLE N = " + n + " ############");
-            long duree = 0;
-            for (int r = 1; r <= repetitions; r++) {
-                System.out.println("\n--- Répétition n°" + r + " ---");
 
-                IHistorique h = GenerateurDonnees.generer(n, new HistoriqueTreeMap());
+        //Scénario Audit (beaucoup de vérifications)
+        System.out.println("\n###################### SCENARIO AUDIT #####################");
+        Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, 1000, 5, 1, 20, 34, 40);
 
-                long debut = System.nanoTime();
-                Benchmark.scenario(h, 1000, 70, 2, 15, 10, 3);
-                long fin = System.nanoTime();
-                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
-                duree = duree + (fin - debut);
-            }
-
-            System.out.println("\nTemps moyen du scénario (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
-
-        }
-
-        // Scénario Audit (beaucoup de vérifications/recherches)
-        System.out.println("\n###################### SCENARIO AUDIT (TREEMAP) #####################");
-        for (int n : tailles) {
-            System.out.println("\n########### TAILLE N = " + n + " ############");
-            long duree = 0;
-            for (int r = 1; r <= repetitions; r++) {
-                System.out.println("\n--- Répétition n°" + r + " ---");
-
-                IHistorique h = GenerateurDonnees.generer(n, new HistoriqueTreeMap());
-
-                long debut = System.nanoTime();
-                Benchmark.scenario(h, 1000, 5, 1, 20, 34, 40);
-                long fin = System.nanoTime();
-                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
-                duree = duree + (fin - debut);
-            }
-
-            System.out.println("\nTemps moyen du scénario (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
-
-        }
 
         //Scénario e-commerce (consulte les commandes)
         System.out.println("\n###################### SCENARIO E-COMMERCE #####################");
-        for (int n : tailles) {
-            System.out.println("\n########### TAILLE N = " + n + " ############");
-            long duree = 0;
-            for (int r = 1; r <= repetitions; r++) {
-                System.out.println("\n--- Répétition n°" + r + " ---");
+        Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, 1000, 25, 10, 30, 25, 10);
 
-                IHistorique h = GenerateurDonnees.generer(n, new HistoriqueTreeMap());
 
-                long debut = System.nanoTime();
-                Benchmark.scenario(h, 1000, 25, 10, 30, 25, 10);
-                long fin = System.nanoTime();
-                System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
-                duree = duree + (fin - debut);
-            }
+        //TABLEAU
+        String formatLigne = "| %-30s | %-20.3f | %-20.3f |%n";
+        String separateur  = "+--------------------------------+----------------------+----------------------+";
 
-            System.out.println("\nTemps moyen du scénario (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
+        //TABLEAU 1 - TEMPS CALCUL
+        System.out.println("\n              === TABLEAU TEMPS CALCUL DES OPERATIONS (ms) ===");
+        System.out.println(separateur);
+        System.out.printf("| %-30s | %-20s | %-20s |%n", "Nom du Test", "TreeSet (ms)", "TreeMap (ms)");
+        System.out.println(separateur);
 
+        for (int i = 0; i < nomOperation.size(); i++) {
+            System.out.format(formatLigne,
+                    nomOperation.get(i),
+                    calculTempsTreeSet.get(i),
+                    calculTempsTreeMap.get(i)
+            );
         }
+        System.out.println(separateur);
+
+        //TABLEAU 2 : CALCUL MÉMOIRE
+        System.out.println("\n              === TABLEAU CALCUL MÉMOIRE DES OPERATIONS (octets) ===");
+        System.out.println(separateur);
+        System.out.printf("| %-30s | %-20s | %-20s |%n", "Nom de l'opération", "TreeSet (oct)", "TreeMap (oct)");
+        System.out.println(separateur);
+
+        for (int i = 0; i < nomOperation.size(); i++) {
+            System.out.format(formatLigne,
+                    nomOperation.get(i),
+                    calculMemoireTreeSet.get(i),
+                    calculMemoireTreeMap.get(i)
+            );
+        }
+        System.out.println(separateur);
+
+
+
+
+
+
+
+
+
     }
+
 }
+
+
 
 
 
