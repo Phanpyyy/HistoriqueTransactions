@@ -3,17 +3,24 @@ package HistoriqueTransactions;
 public class ResultatBenchmark {
     //Attributs --------------------------------------------------------------------------------------------------------
     private IHistorique historique;
+    private int taille;
     private double tempsGenerationDonnees;
     private double calculMemoireGenerationDonnees;
     private double calculTemps;
     private double calculMemoire;
 
+    //Constructeurs ----------------------------------------------------------------------------------------------------
     public ResultatBenchmark(double calculTemps, double calculMemoire) {
         this.calculTemps = calculTemps;
         this.calculMemoire = calculMemoire;
     }
 
-    //Constructeurs ----------------------------------------------------------------------------------------------------
+    public ResultatBenchmark(int taille, double calculTemps, double calculMemoire) {
+        this.taille = taille;
+        this.calculTemps = calculTemps;
+        this.calculMemoire = calculMemoire;
+    }
+
     public ResultatBenchmark(IHistorique historique, double tempsGenerationDonnees, double calculMemoireGenerationDonnees, double calculTemps, double calculMemoire) {
         this.historique = historique;
         this.tempsGenerationDonnees = tempsGenerationDonnees;
@@ -40,5 +47,9 @@ public class ResultatBenchmark {
 
     public double getCalculMemoireGenerationDonnees() {
         return calculMemoireGenerationDonnees;
+    }
+
+    public int getTaille() {
+        return taille;
     }
 }
