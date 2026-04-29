@@ -161,39 +161,52 @@ public class Benchmark {
 
     }
 
-    public static ArrayList<ResultatBenchmark> lancerScenario(int[] taille, int repetitions, IHistorique h, int nbOperations, int pAdd, int pAnnuler, int pRechercheId, int pParcoursChrono, int pComptage) {
+    public static ArrayList<ResultatBenchmark> lancerScenario(int[] tailles, int repetitions, IHistorique modeleVide, int nbOperations, int pAdd, int pAnnuler, int pRechercheId, int pParcoursChrono, int pComptage) {
         ArrayList<ResultatBenchmark> resultats = new ArrayList<>();
 
-        for (int n : taille) {
-            //System.out.println("\n########### TAILLE N = " + n + " ############");
-            double duree = 0;
-            double memoire = 0;
-            for (int r = 1; r <= repetitions; r++) {
-                //System.out.println("\n--- Répétition n°" + r + " ---");
+        for (int n : tailles) {
+            double totalDuree = 0;
+            double totalMemoire = 0;
 
-                //Mémoire avant
+            for (int r = 1; r <= repetitions; r++) {
+                // 1. On recrée l'historique neuf pour chaque répétition
+                IHistorique h = (modeleVide instanceof HistoriqueTreeSet) ? new HistoriqueTreeSet() : new HistoriqueTreeMap();
+                GenerateurDonnees.generer(n, h);
+
+                // 2. Nettoyage et mesure mémoire AVANT
                 System.gc();
                 Runtime rt = Runtime.getRuntime();
-                long memoireAvant = rt.totalMemory() - rt.freeMemory();
+                long memAvant = rt.totalMemory() - rt.freeMemory();
 
+                // 3. Chrono et exécution du scénario
                 long debut = System.nanoTime();
                 Benchmark.scenario(h, nbOperations, pAdd, pAnnuler, pRechercheId, pParcoursChrono, pComptage);
                 long fin = System.nanoTime();
 
-                long memoireApres = rt.totalMemory() - rt.freeMemory();
-                double resultatOctets = memoireApres - memoireAvant;
+                // 4. Mesure mémoire APRÈS
+                long memApres = rt.totalMemory() - rt.freeMemory();
 
-                //System.out.println("Temps total du scénario : " + (fin - debut) * 1e-6 + " ms");
-                duree = duree + (fin - debut);
-                memoire = memoire + resultatOctets;
+                // On calcule la différence (en octets) et on convertit en Ko
+                double diffMemoireKo = (memApres - memAvant) / 1024.0;
+
+                // On accumule pour faire la moyenne plus tard
+                totalDuree += (fin - debut);
+                // On évite les valeurs négatives (si le GC s'est déclenché pendant le test)
+                totalMemoire += Math.max(0, diffMemoireKo);
             }
 
-            //System.out.println("\nTemps moyen du scénario (taille : " + n + ") : " + (duree * 1e-6) / repetitions + " ms");
+            // 5. Calcul des moyennes et ajout au résultat
+            double tempsMoyen = (totalDuree * 1e-6) / repetitions;
+            double memoireMoyenne = totalMemoire / repetitions;
 
-            resultats.add(new ResultatBenchmark(n, (duree*1e-6)/repetitions, (memoire / 1024)/repetitions));
+            resultats.add(new ResultatBenchmark(n, tempsMoyen, memoireMoyenne));
+
+            System.out.println("Taille " + n + " terminee : " + String.format("%.2f", tempsMoyen) + " ms | " + String.format("%.2f", memoireMoyenne) + " Ko");
         }
         return resultats;
     }
+
+
 
 }
 

@@ -1,22 +1,11 @@
 package HistoriqueTransactions;
 
 import javax.swing.*;
-import java.lang.reflect.Array;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.TreeSet;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<String> nomOperation = new ArrayList<String>(Arrays.asList(
-                "Génération des données",
-                "Ajout d'une transaction",
-                "Comptage par type",
-                "Recherche par identifiant",
-                "Parcours chronologique",
-                "Suppression d'une transaction"
-        ));
 
         //##################################################################################################################
         //############################################## TREESET ###########################################################
@@ -98,21 +87,25 @@ public class Main {
         //############################################### SCENARIOS ####################################################
         //##############################################################################################################
 
-        int[] tailles = {1000, 5000, 10000};
-        int repetitions = 5;
+        int[] tailles = {1000, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000};
+        int repetitions = 20;
+        int nbOperations = 1000;
 
-        //Scénario trading (beaucoup d'ajouts)
+        //Lancement une première fois dans le vide pour le warmup
+        Benchmark.lancerScenario(new int[]{1000}, 1, new HistoriqueTreeSet(), 1000, 20, 20, 20, 20, 20);
+
+        //Scénario Gestion de compte bancaire (beaucoup d'ajouts, annulations et recherche par id)
+        //System.out.println("\n###################### SCENARIO GESTION DE COMPTE BANCAIRE #####################");
+        ArrayList<ResultatBenchmark> resultatsTreeSet_compteBancaire = (Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, nbOperations, 35, 25, 30, 5, 5));
+
+        //Scénario Consultation client (beaucoup de parcours chronologique)
+        //System.out.println("\n###################### SCENARIO CONSULTATION CLIENT #####################");
+        ArrayList<ResultatBenchmark> resultatsTreeSet_consultationClient = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, nbOperations, 5, 5, 10, 70, 10);
+
+
+        //Scénario trading (beaucoup d'ajouts et de comptage par type)
         //System.out.println("\n###################### SCENARIO TRADING #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeSet1 = (Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, 1000, 70, 2, 15, 10, 3));
-
-        //Scénario Audit (beaucoup de vérifications)
-        //System.out.println("\n###################### SCENARIO AUDIT #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeSet2 = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, 1000, 5, 1, 20, 34, 40);
-
-
-        //Scénario e-commerce (consulte les commandes)
-        //System.out.println("\n###################### SCENARIO E-COMMERCE #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeSet3 = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, 1000, 25, 10, 30, 25, 10);
+        ArrayList<ResultatBenchmark> resultatsTreeSet_trading = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, nbOperations, 45, 5, 5, 10, 35);
 
 
         //##############################################################################################################
@@ -190,26 +183,37 @@ public class Main {
         //############################################### SCENARIOS ####################################################
         //##############################################################################################################
 
-        //Scenario Trading (beaucoup d'ajouts)
+        //Premier lancement à vide pour le warmup
+        Benchmark.lancerScenario(new int[]{1000}, 1, new HistoriqueTreeMap(), 1000, 20, 20, 20, 20, 20);
+
+        //Scenario Gestion de compte bancaire (beaucoup d'ajouts, d'annulations et de recherches par id)
+        //System.out.println("\n###################### SCENARIO GESTION COMPTE BANCAIRE #####################");
+        ArrayList<ResultatBenchmark> resultatsTreeMap_compteBancaire = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, nbOperations, 35, 25, 30, 5, 5);
+
+
+        //Scénario Consultation client (beaucoup de parcours chronologique)
+        //System.out.println("\n###################### SCENARIO CONSULTATION CLIENT #####################");
+        ArrayList<ResultatBenchmark> resultatsTreeMap_consultationClient = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, nbOperations, 5, 5, 10, 70, 10);
+
+
+        //Scénario trading (beaucoup d'ajouts et de comptage par type)
         //System.out.println("\n###################### SCENARIO TRADING #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeMap1 = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, 1000, 70, 2, 15, 10, 3);
-
-
-        //Scénario Audit (beaucoup de vérifications)
-        //System.out.println("\n###################### SCENARIO AUDIT #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeMap2 = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, 1000, 5, 1, 20, 34, 40);
-
-
-        //Scénario e-commerce (consulte les commandes)
-        //System.out.println("\n###################### SCENARIO E-COMMERCE #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeMap3 = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, 1000, 25, 10, 30, 25, 10);
+        ArrayList<ResultatBenchmark> resultatsTreeMap_trading = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, nbOperations, 45, 5, 5, 10, 35);
 
 
         //##############################################################################################################
         //#############################################  TABLEAUX  #####################################################
         //##############################################################################################################
-
-        String formatLigne = "| %-30s | %-20.3f | %-20.3f |%n";
+        ArrayList<String> nomOperation = new ArrayList<String>(Arrays.asList(
+                "Génération des données",
+                "Ajout d'une transaction",
+                "Comptage par type",
+                "Recherche par identifiant",
+                "Parcours chronologique",
+                "Suppression d'une transaction"
+        ));
+        
+        String formatLigne = "| %-30s | %-20.4f | %-20.4f |%n";
         String separateur = "+--------------------------------+----------------------+----------------------+";
 
         //TABLEAU 1 - TEMPS CALCUL -------------------------------------------------------------------------------------
@@ -243,16 +247,16 @@ public class Main {
         System.out.println(separateur);
 
 
-        //TABLEAU 3 - SCENARIOS ----------------------------------------------------------------------------------------
-        System.out.println("\n                         === TABLEAU SCENARIO 1 ===");
+        //TABLEAUX - SCENARIOS ----------------------------------------------------------------------------------------
+        System.out.println("\n                === SCENARIO 1 - GESTION COMPTE BANCAIRE ===");
         System.out.println("------------------------------------------------------------------------------------");
         System.out.printf("%-10s | %-15s | %-15s | %-15s | %-15s%n",
                 "Taille (N)", "Temps TreeSet", "Mémoire TreeSet", "Temps TreeMap", "Mémoire TreeMap");
         System.out.println("------------------------------------------------------------------------------------");
 
-        for (int i = 0; i < resultatsTreeSet1.size(); i++) {
-            ResultatBenchmark resSet = resultatsTreeSet1.get(i);
-            ResultatBenchmark resMap = resultatsTreeMap1.get(i);
+        for (int i = 0; i < resultatsTreeSet_compteBancaire.size(); i++) {
+            ResultatBenchmark resSet = resultatsTreeSet_compteBancaire.get(i);
+            ResultatBenchmark resMap = resultatsTreeMap_compteBancaire.get(i);
 
             System.out.printf("%-10d | %-12.4f ms | %-12.2f Ko | %-12.4f ms | %-12.2f Ko%n",
                     resSet.getTaille(),
@@ -260,15 +264,15 @@ public class Main {
                     resMap.getCalculTemps(), resMap.getCalculMemoire());
         }
 
-        System.out.println("\n                         === TABLEAU SCENARIO 2 ===");
+        System.out.println("\n                    === SCENARIO 2 - CONSULTATION CLIENT ===");
         System.out.println("------------------------------------------------------------------------------------");
         System.out.printf("%-10s | %-15s | %-15s | %-15s | %-15s%n",
                 "Taille (N)", "Temps TreeSet", "Mémoire TreeSet", "Temps TreeMap", "Mémoire TreeMap");
         System.out.println("------------------------------------------------------------------------------------");
 
-        for (int i = 0; i < resultatsTreeSet2.size(); i++) {
-            ResultatBenchmark resSet = resultatsTreeSet2.get(i);
-            ResultatBenchmark resMap = resultatsTreeMap2.get(i);
+        for (int i = 0; i < resultatsTreeSet_consultationClient.size(); i++) {
+            ResultatBenchmark resSet = resultatsTreeSet_consultationClient.get(i);
+            ResultatBenchmark resMap = resultatsTreeMap_consultationClient.get(i);
 
             System.out.printf("%-10d | %-12.4f ms | %-12.2f Ko | %-12.4f ms | %-12.2f Ko%n",
                     resSet.getTaille(),
@@ -276,15 +280,15 @@ public class Main {
                     resMap.getCalculTemps(), resMap.getCalculMemoire());
         }
 
-        System.out.println("\n                         === TABLEAU SCENARIO 3 ===");
+        System.out.println("\n                       === SCENARIO 3 - TRADING ===");
         System.out.println("------------------------------------------------------------------------------------");
         System.out.printf("%-10s | %-15s | %-15s | %-15s | %-15s%n",
                 "Taille (N)", "Temps TreeSet", "Mémoire TreeSet", "Temps TreeMap", "Mémoire TreeMap");
         System.out.println("------------------------------------------------------------------------------------");
 
-        for (int i = 0; i < resultatsTreeSet3.size(); i++) {
-            ResultatBenchmark resSet = resultatsTreeSet3.get(i);
-            ResultatBenchmark resMap = resultatsTreeMap3.get(i);
+        for (int i = 0; i < resultatsTreeSet_trading.size(); i++) {
+            ResultatBenchmark resSet = resultatsTreeSet_trading.get(i);
+            ResultatBenchmark resMap = resultatsTreeMap_trading.get(i);
 
             System.out.printf("%-10d | %-12.4f ms | %-12.2f Ko | %-12.4f ms | %-12.2f Ko%n",
                     resSet.getTaille(),
@@ -292,75 +296,126 @@ public class Main {
                     resMap.getCalculTemps(), resMap.getCalculMemoire());
         }
 
-
-    }
-
-}
 
 
         //##############################################################################################################
         //########################################## GRAPHES ###########################################################
         //##############################################################################################################
-//
-//        int[] tailles2 = {1000, 10000, 50000};
-//
-//        // 1. Tes carnets de notes (vides au début)
-//        ArrayList<Integer> resultatsTailles = new ArrayList<>();
-//        ArrayList<Long> resultatsTempsSet = new ArrayList<>();
-//        ArrayList<Long> resultatsTempsMap = new ArrayList<>();
-//
-//
-//        // --- TEST TREESET ---
-//        System.out.println("### BENCHMARK TREESET ###");
-//        for (int n : tailles2) {
-//            long dureeCumulee = 0;
-//            for (int r = 1; r <= repetitions; r++) {
-//                HistoriqueTreeSet h = GenerateurDonnees.generer(n);
-//                long debut = System.nanoTime();
-//
-//                // On choisit le scénario AUDIT (le plus représentatif pour le TreeMap)
-//                Benchmark.scenario(h, 1000, 5, 1, 20, 34, 40);
-//
-//                long fin = System.nanoTime();
-//                dureeCumulee += (fin - debut);
-//            }
-//            // ON REMPLIT LES LISTES ICI
-//            long moyenne = dureeCumulee / repetitions;
-//            resultatsTailles.add(n);
-//            resultatsTempsSet.add(moyenne);
-//
-//            System.out.println("Moyenne TreeSet (N=" + n + ") : " + (moyenne * 1e-6) + " ms");
-//        }
-//
-//        // --- TEST TREEMAP ---
-//        System.out.println("\n### BENCHMARK TREEMAP ###");
-//        for (int n : tailles2) {
-//            long dureeCumulee = 0;
-//            for (int r = 1; r <= repetitions; r++) {
-//                HistoriqueTreeMap hMap = GenerateurDonnees.genererMap();
-//                long debut = System.nanoTime();
-//
-//                // Même scénario exact !
-//                Benchmark.scenarioMap(hMap, 1000, 5, 1, 20, 34, 40);
-//
-//                long fin = System.nanoTime();
-//                dureeCumulee += (fin - debut);
-//            }
-//            // ON REMPLIT LES LISTES ICI
-//            long moyenneMap = dureeCumulee / repetitions;
-//            resultatsTempsMap.add(moyenneMap);
-//
-//            System.out.println("Moyenne TreeMap (N=" + n + ") : " + (moyenneMap * 1e-6) + " ms");
-//        }
-//
-//        // 3. AFFICHAGE DU GRAPHIQUE
-//        SwingUtilities.invokeLater(() -> {
-//            Graphe graphe = new Graphe(resultatsTempsSet, resultatsTempsMap, resultatsTailles);
-//            graphe.setVisible(true);
-//        });
-//
-//
-//        System.out.println("\n################################# FIN DES TESTS #################################");
-//    }
-//    }
-//}
+
+        //GRAPHE 1 - SCENARIO GESTION COMPTE BANCAIRE ------------------------------------------------------------------
+        ArrayList<Double> tempsSet_compteBancaire = new ArrayList<>();
+        ArrayList<Double> tempsMap_compteBancaire = new ArrayList<>();
+        ArrayList<Integer> taillesN_compteBancaire = new ArrayList<>();
+
+        for (ResultatBenchmark r : resultatsTreeSet_compteBancaire) {
+            tempsSet_compteBancaire.add(r.getCalculTemps());
+            taillesN_compteBancaire.add(r.getTaille());
+        }
+        for (ResultatBenchmark r : resultatsTreeMap_compteBancaire) {
+            tempsMap_compteBancaire.add(r.getCalculTemps());
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new Graphe(tempsSet_compteBancaire, tempsMap_compteBancaire, taillesN_compteBancaire,
+                    "Temps - Scénario 1 - Gestion compte bancaire", "Temps (ms)").setVisible(true);
+        });
+
+        //GRAPHE MÉMOIRE
+        ArrayList<Double> memoireSet_compteBancaire = new ArrayList<>();
+        ArrayList<Double> memoireMap_compteBancaire = new ArrayList<>();
+        ArrayList<Integer> taillesN_memoireCompteBancaire = new ArrayList<>();
+
+        for (ResultatBenchmark r : resultatsTreeSet_compteBancaire) {
+            memoireSet_compteBancaire.add(r.getCalculMemoire()); // On récupère la mémoire ici
+            taillesN_memoireCompteBancaire.add(r.getTaille());
+        }
+
+        for (ResultatBenchmark r : resultatsTreeMap_compteBancaire) {
+            memoireMap_compteBancaire.add(r.getCalculMemoire()); // On récupère la mémoire ici
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new Graphe(memoireSet_compteBancaire, memoireMap_compteBancaire, taillesN_memoireCompteBancaire,
+                    "Mémoire : Scénario 1 - Gestion compte bancaire", "Mémoire (o)").setVisible(true);
+        });
+
+        //GRAPHE 2 - SCENARIO CONSULTATION CLIENT ----------------------------------------------------------------------
+        ArrayList<Double> tempsSet_consultationClient = new ArrayList<>();
+        ArrayList<Double> tempsMap_consultationClient = new ArrayList<>();
+        ArrayList<Integer> taillesN_consultationClient = new ArrayList<>();
+
+        for (ResultatBenchmark r : resultatsTreeSet_consultationClient) {
+            tempsSet_consultationClient.add(r.getCalculTemps());
+            taillesN_consultationClient.add(r.getTaille());
+        }
+        for (ResultatBenchmark r : resultatsTreeMap_consultationClient) {
+            tempsMap_consultationClient.add(r.getCalculTemps());
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new Graphe(tempsSet_consultationClient, tempsMap_consultationClient, taillesN_consultationClient, "Temps : Scénario 2 - Consultation Client", "Temps (ms)").setVisible(true);
+        });
+
+        //GRAPHE MÉMOIRE
+        ArrayList<Double> memoireSet_consultationClient = new ArrayList<>();
+        ArrayList<Double> memoireMap_consultationClient = new ArrayList<>();
+        ArrayList<Integer> taillesN_memoireConsultationClient = new ArrayList<>();
+
+        for (ResultatBenchmark r : resultatsTreeSet_consultationClient) {
+            memoireSet_consultationClient.add(r.getCalculMemoire()); // On récupère la mémoire ici
+            taillesN_memoireConsultationClient.add(r.getTaille());
+        }
+
+        for (ResultatBenchmark r : resultatsTreeMap_consultationClient) {
+            memoireMap_consultationClient.add(r.getCalculMemoire()); // On récupère la mémoire ici
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new Graphe(memoireSet_consultationClient, memoireMap_consultationClient, taillesN_memoireConsultationClient,
+                    "Mémoire : Scénario 2 - Consultation client", "Mémoire (o)").setVisible(true);
+        });
+
+
+        //GRAPHE 3 - TRADING -------------------------------------------------------------------------------------------
+        ArrayList<Double> tempsSet_trading = new ArrayList<>();
+        ArrayList<Double> tempsMap_trading = new ArrayList<>();
+        ArrayList<Integer> taillesN_trading = new ArrayList<>();
+
+        for (ResultatBenchmark r : resultatsTreeSet_trading) {
+            tempsSet_trading.add(r.getCalculTemps());
+            taillesN_trading.add(r.getTaille());
+        }
+        for (ResultatBenchmark r : resultatsTreeMap_trading) {
+            tempsMap_trading.add(r.getCalculTemps());
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new Graphe(tempsSet_trading, tempsMap_trading, taillesN_trading, "Scénario 3 - Trading", "Temps (ms)").setVisible(true);
+        });
+
+
+        //GRAPHE MÉMOIRE
+        ArrayList<Double> memoireSet_trading = new ArrayList<>();
+        ArrayList<Double> memoireMap_trading = new ArrayList<>();
+        ArrayList<Integer> taillesN_memoireTrading = new ArrayList<>();
+
+        for (ResultatBenchmark r : resultatsTreeSet_consultationClient) {
+            memoireSet_trading.add(r.getCalculMemoire()); // On récupère la mémoire ici
+            taillesN_memoireTrading.add(r.getTaille());
+        }
+
+        for (ResultatBenchmark r : resultatsTreeMap_consultationClient) {
+            memoireMap_trading.add(r.getCalculMemoire()); // On récupère la mémoire ici
+        }
+
+        SwingUtilities.invokeLater(() -> {
+            new Graphe(memoireSet_trading, memoireMap_trading, taillesN_memoireTrading,
+                    "Mémoire : Scénario 3 - Trading", "Mémoire (o)").setVisible(true);
+        });
+
+
+
+
+    }
+
+}

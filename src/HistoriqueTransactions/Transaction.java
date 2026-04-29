@@ -20,6 +20,10 @@ public class Transaction implements Comparable<Transaction>{
         this.montant = montant;
     }
 
+    public Transaction(String id) {
+        this.id=id;
+    }
+
     //Accesseurs -------------------------------------------------------------------------------------------------------
     public String getId() {
         return id;
@@ -66,6 +70,12 @@ public class Transaction implements Comparable<Transaction>{
             return this.id.compareTo(t.getId());
         }
     }
+
+    //Tri des données par id
+//    @Override
+//    public int compareTo(Transaction t) {
+//        return this.id.compareTo(t.getId());
+//    }
 
     @Override
     public String toString() {
