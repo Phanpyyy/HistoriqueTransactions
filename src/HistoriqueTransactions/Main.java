@@ -212,7 +212,7 @@ public class Main {
                 "Parcours chronologique",
                 "Suppression d'une transaction"
         ));
-        
+
         String formatLigne = "| %-30s | %-20.4f | %-20.4f |%n";
         String separateur = "+--------------------------------+----------------------+----------------------+";
 
@@ -264,38 +264,38 @@ public class Main {
                     resMap.getCalculTemps(), resMap.getCalculMemoire());
         }
 
-        System.out.println("\n                    === SCENARIO 2 - CONSULTATION CLIENT ===");
-        System.out.println("------------------------------------------------------------------------------------");
-        System.out.printf("%-10s | %-15s | %-15s | %-15s | %-15s%n",
-                "Taille (N)", "Temps TreeSet", "Mémoire TreeSet", "Temps TreeMap", "Mémoire TreeMap");
-        System.out.println("------------------------------------------------------------------------------------");
-
-        for (int i = 0; i < resultatsTreeSet_consultationClient.size(); i++) {
-            ResultatBenchmark resSet = resultatsTreeSet_consultationClient.get(i);
-            ResultatBenchmark resMap = resultatsTreeMap_consultationClient.get(i);
-
-            System.out.printf("%-10d | %-12.4f ms | %-12.2f Ko | %-12.4f ms | %-12.2f Ko%n",
-                    resSet.getTaille(),
-                    resSet.getCalculTemps(), resSet.getCalculMemoire(),
-                    resMap.getCalculTemps(), resMap.getCalculMemoire());
-        }
-
-        System.out.println("\n                       === SCENARIO 3 - TRADING ===");
-        System.out.println("------------------------------------------------------------------------------------");
-        System.out.printf("%-10s | %-15s | %-15s | %-15s | %-15s%n",
-                "Taille (N)", "Temps TreeSet", "Mémoire TreeSet", "Temps TreeMap", "Mémoire TreeMap");
-        System.out.println("------------------------------------------------------------------------------------");
-
-        for (int i = 0; i < resultatsTreeSet_trading.size(); i++) {
-            ResultatBenchmark resSet = resultatsTreeSet_trading.get(i);
-            ResultatBenchmark resMap = resultatsTreeMap_trading.get(i);
-
-            System.out.printf("%-10d | %-12.4f ms | %-12.2f Ko | %-12.4f ms | %-12.2f Ko%n",
-                    resSet.getTaille(),
-                    resSet.getCalculTemps(), resSet.getCalculMemoire(),
-                    resMap.getCalculTemps(), resMap.getCalculMemoire());
-        }
-
+//        System.out.println("\n                    === SCENARIO 2 - CONSULTATION CLIENT ===");
+//        System.out.println("------------------------------------------------------------------------------------");
+//        System.out.printf("%-10s | %-15s | %-15s | %-15s | %-15s%n",
+//                "Taille (N)", "Temps TreeSet", "Mémoire TreeSet", "Temps TreeMap", "Mémoire TreeMap");
+//        System.out.println("------------------------------------------------------------------------------------");
+//
+//        for (int i = 0; i < resultatsTreeSet_consultationClient.size(); i++) {
+//            ResultatBenchmark resSet = resultatsTreeSet_consultationClient.get(i);
+//            ResultatBenchmark resMap = resultatsTreeMap_consultationClient.get(i);
+//
+//            System.out.printf("%-10d | %-12.4f ms | %-12.2f Ko | %-12.4f ms | %-12.2f Ko%n",
+//                    resSet.getTaille(),
+//                    resSet.getCalculTemps(), resSet.getCalculMemoire(),
+//                    resMap.getCalculTemps(), resMap.getCalculMemoire());
+//        }
+//
+//        System.out.println("\n                       === SCENARIO 3 - TRADING ===");
+//        System.out.println("------------------------------------------------------------------------------------");
+//        System.out.printf("%-10s | %-15s | %-15s | %-15s | %-15s%n",
+//                "Taille (N)", "Temps TreeSet", "Mémoire TreeSet", "Temps TreeMap", "Mémoire TreeMap");
+//        System.out.println("------------------------------------------------------------------------------------");
+//
+//        for (int i = 0; i < resultatsTreeSet_trading.size(); i++) {
+//            ResultatBenchmark resSet = resultatsTreeSet_trading.get(i);
+//            ResultatBenchmark resMap = resultatsTreeMap_trading.get(i);
+//
+//            System.out.printf("%-10d | %-12.4f ms | %-12.2f Ko | %-12.4f ms | %-12.2f Ko%n",
+//                    resSet.getTaille(),
+//                    resSet.getCalculTemps(), resSet.getCalculMemoire(),
+//                    resMap.getCalculTemps(), resMap.getCalculMemoire());
+//        }
+//
 
 
         //##############################################################################################################
@@ -320,24 +320,24 @@ public class Main {
                     "Temps - Scénario 1 - Gestion compte bancaire", "Temps (ms)").setVisible(true);
         });
 
-        //GRAPHE MÉMOIRE
-        ArrayList<Double> memoireSet_compteBancaire = new ArrayList<>();
-        ArrayList<Double> memoireMap_compteBancaire = new ArrayList<>();
-        ArrayList<Integer> taillesN_memoireCompteBancaire = new ArrayList<>();
-
-        for (ResultatBenchmark r : resultatsTreeSet_compteBancaire) {
-            memoireSet_compteBancaire.add(r.getCalculMemoire()); // On récupère la mémoire ici
-            taillesN_memoireCompteBancaire.add(r.getTaille());
-        }
-
-        for (ResultatBenchmark r : resultatsTreeMap_compteBancaire) {
-            memoireMap_compteBancaire.add(r.getCalculMemoire()); // On récupère la mémoire ici
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            new Graphe(memoireSet_compteBancaire, memoireMap_compteBancaire, taillesN_memoireCompteBancaire,
-                    "Mémoire : Scénario 1 - Gestion compte bancaire", "Mémoire (o)").setVisible(true);
-        });
+//        //GRAPHE MÉMOIRE
+//        ArrayList<Double> memoireSet_compteBancaire = new ArrayList<>();
+//        ArrayList<Double> memoireMap_compteBancaire = new ArrayList<>();
+//        ArrayList<Integer> taillesN_memoireCompteBancaire = new ArrayList<>();
+//
+//        for (ResultatBenchmark r : resultatsTreeSet_compteBancaire) {
+//            memoireSet_compteBancaire.add(r.getCalculMemoire()); // On récupère la mémoire ici
+//            taillesN_memoireCompteBancaire.add(r.getTaille());
+//        }
+//
+//        for (ResultatBenchmark r : resultatsTreeMap_compteBancaire) {
+//            memoireMap_compteBancaire.add(r.getCalculMemoire()); // On récupère la mémoire ici
+//        }
+//
+//        SwingUtilities.invokeLater(() -> {
+//            new Graphe(memoireSet_compteBancaire, memoireMap_compteBancaire, taillesN_memoireCompteBancaire,
+//                    "Mémoire : Scénario 1 - Gestion compte bancaire", "Mémoire (o)").setVisible(true);
+//        });
 
         //GRAPHE 2 - SCENARIO CONSULTATION CLIENT ----------------------------------------------------------------------
         ArrayList<Double> tempsSet_consultationClient = new ArrayList<>();
@@ -354,25 +354,6 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
             new Graphe(tempsSet_consultationClient, tempsMap_consultationClient, taillesN_consultationClient, "Temps : Scénario 2 - Consultation Client", "Temps (ms)").setVisible(true);
-        });
-
-        //GRAPHE MÉMOIRE
-        ArrayList<Double> memoireSet_consultationClient = new ArrayList<>();
-        ArrayList<Double> memoireMap_consultationClient = new ArrayList<>();
-        ArrayList<Integer> taillesN_memoireConsultationClient = new ArrayList<>();
-
-        for (ResultatBenchmark r : resultatsTreeSet_consultationClient) {
-            memoireSet_consultationClient.add(r.getCalculMemoire()); // On récupère la mémoire ici
-            taillesN_memoireConsultationClient.add(r.getTaille());
-        }
-
-        for (ResultatBenchmark r : resultatsTreeMap_consultationClient) {
-            memoireMap_consultationClient.add(r.getCalculMemoire()); // On récupère la mémoire ici
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            new Graphe(memoireSet_consultationClient, memoireMap_consultationClient, taillesN_memoireConsultationClient,
-                    "Mémoire : Scénario 2 - Consultation client", "Mémoire (o)").setVisible(true);
         });
 
 
@@ -394,24 +375,6 @@ public class Main {
         });
 
 
-        //GRAPHE MÉMOIRE
-        ArrayList<Double> memoireSet_trading = new ArrayList<>();
-        ArrayList<Double> memoireMap_trading = new ArrayList<>();
-        ArrayList<Integer> taillesN_memoireTrading = new ArrayList<>();
-
-        for (ResultatBenchmark r : resultatsTreeSet_consultationClient) {
-            memoireSet_trading.add(r.getCalculMemoire()); // On récupère la mémoire ici
-            taillesN_memoireTrading.add(r.getTaille());
-        }
-
-        for (ResultatBenchmark r : resultatsTreeMap_consultationClient) {
-            memoireMap_trading.add(r.getCalculMemoire()); // On récupère la mémoire ici
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            new Graphe(memoireSet_trading, memoireMap_trading, taillesN_memoireTrading,
-                    "Mémoire : Scénario 3 - Trading", "Mémoire (o)").setVisible(true);
-        });
 
 
 

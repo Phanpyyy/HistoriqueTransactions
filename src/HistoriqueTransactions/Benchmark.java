@@ -11,10 +11,12 @@ public class Benchmark {
     //Permet de générer n transactions
     //et de retourner l'occupation mémoire, le temps de génération et le jeu de données
     public static ResultatBenchmark donnees(int n, IHistorique h) {
+
         System.gc();
         Runtime rt = Runtime.getRuntime();
         //Mémoire occupée avant la génération des données
         long memoireAvant = rt.totalMemory() - rt.freeMemory();
+
         long debut = System.nanoTime();
 
         IHistorique historique = GenerateurDonnees.generer(n, h);
