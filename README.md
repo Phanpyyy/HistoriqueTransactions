@@ -9,6 +9,7 @@ Le projet porte sur l’étude expérimentale du choix d’une structure de donn
 Ici notre programme porte sur un **historique de transactions** qui nous permet d'étudier deux structures différentes : 
 * `TreeSet` (organisation arborescente ordonnée par date).
 * `TreeMap` (table associative indexée par identifiant unique).
+
 L'objectif est de mesurer et comparer leur temps d'exécution ainsi que leur occupation mémoire face à différents scénarios.
 
 ---
