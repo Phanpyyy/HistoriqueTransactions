@@ -31,3 +31,21 @@ Les résultats peuvent être visualisés via des graphiques comparatifs.
 * `GenerateurDonnees.java` : Génère de grands volumes de données.
 * `Benchmark.java` & `ResultatBenchmark.java` : Mesure les performances temporelles et mémorielles.
 * `Graphe.java` : Interface graphique générant les graphiques comparatifs.
+
+  ---
+
+## Lancement du projet
+
+```bash
+1. Récupérer le projet
+
+git clone https://github.com/Phanpyyy/HistoriqueTransactions.git
+
+2. Compiler 
+
+mkdir HistoriqueTransactions/bin
+
+javac -d HistoriqueTransactions/bin HistoriqueTransactions/src/HistoriqueTransactions/*.java
+
+3. Exécuter 
+java -cp HistoriqueTransactions/bin HistoriqueTransactions.Main
