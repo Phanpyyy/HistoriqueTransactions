@@ -16,12 +16,9 @@ L'objectif est de mesurer et comparer leur temps d'exécution ainsi que leur occ
 
 ##  Benchmark & Visualisation Data
 Afin de comparer les deux structures, un outil de *Benchmarking* (`Benchmark.java`) a été développé pour mesurer :
-1. **La performance temporelle** : vitesse d'exécution des scénarios d'opérations via `System.nanoTime()`.
-2. **L'occupation mémoire** : consommation RAM (en Ko) lors de la création et la manipulation des objets.
+* **La performance temporelle** : vitesse d'exécution des scénarios d'opérations via `System.nanoTime()`.
+* **L'occupation mémoire** : consommation RAM (en Ko) lors de la création et la manipulation des objets.
 
----
-
-### Visualisation Graphique (Swing)
 Les résultats peuvent être visualisés via des graphiques comparatifs.
 
 ---
