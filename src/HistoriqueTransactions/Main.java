@@ -87,7 +87,7 @@ public class Main {
         //############################################### SCENARIOS ####################################################
         //##############################################################################################################
 
-        int[] tailles = {1000, 5000, 10000, 15000, 20000, 25000, 30000, 35000, 40000, 45000, 50000};
+        int[] tailles = {1000, 5000, 10000, 15000, 20000, 25000, 30000};
         int repetitions = 20;
         int nbOperations = 1000;
 
@@ -100,12 +100,12 @@ public class Main {
 
         //Scénario Consultation client (beaucoup de parcours chronologique)
         //System.out.println("\n###################### SCENARIO CONSULTATION CLIENT #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeSet_consultationClient = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, nbOperations, 5, 5, 10, 70, 10);
+       // ArrayList<ResultatBenchmark> resultatsTreeSet_consultationClient = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, nbOperations, 5, 5, 10, 70, 10);
 
 
         //Scénario trading (beaucoup d'ajouts et de comptage par type)
         //System.out.println("\n###################### SCENARIO TRADING #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeSet_trading = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, nbOperations, 45, 5, 5, 10, 35);
+       // ArrayList<ResultatBenchmark> resultatsTreeSet_trading = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeSet, nbOperations, 45, 5, 5, 10, 35);
 
 
         //##############################################################################################################
@@ -193,12 +193,12 @@ public class Main {
 
         //Scénario Consultation client (beaucoup de parcours chronologique)
         //System.out.println("\n###################### SCENARIO CONSULTATION CLIENT #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeMap_consultationClient = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, nbOperations, 5, 5, 10, 70, 10);
+       // ArrayList<ResultatBenchmark> resultatsTreeMap_consultationClient = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, nbOperations, 5, 5, 10, 70, 10);
 
 
         //Scénario trading (beaucoup d'ajouts et de comptage par type)
         //System.out.println("\n###################### SCENARIO TRADING #####################");
-        ArrayList<ResultatBenchmark> resultatsTreeMap_trading = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, nbOperations, 45, 5, 5, 10, 35);
+       // ArrayList<ResultatBenchmark> resultatsTreeMap_trading = Benchmark.lancerScenario(tailles, repetitions, historiqueTreeMap, nbOperations, 45, 5, 5, 10, 35);
 
 
         //##############################################################################################################
@@ -340,39 +340,39 @@ public class Main {
 //        });
 
         //GRAPHE 2 - SCENARIO CONSULTATION CLIENT ----------------------------------------------------------------------
-        ArrayList<Double> tempsSet_consultationClient = new ArrayList<>();
-        ArrayList<Double> tempsMap_consultationClient = new ArrayList<>();
-        ArrayList<Integer> taillesN_consultationClient = new ArrayList<>();
-
-        for (ResultatBenchmark r : resultatsTreeSet_consultationClient) {
-            tempsSet_consultationClient.add(r.getCalculTemps());
-            taillesN_consultationClient.add(r.getTaille());
-        }
-        for (ResultatBenchmark r : resultatsTreeMap_consultationClient) {
-            tempsMap_consultationClient.add(r.getCalculTemps());
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            new Graphe(tempsSet_consultationClient, tempsMap_consultationClient, taillesN_consultationClient, "Temps : Scénario 2 - Consultation Client", "Temps (ms)").setVisible(true);
-        });
+//        ArrayList<Double> tempsSet_consultationClient = new ArrayList<>();
+//        ArrayList<Double> tempsMap_consultationClient = new ArrayList<>();
+//        ArrayList<Integer> taillesN_consultationClient = new ArrayList<>();
+//
+//        for (ResultatBenchmark r : resultatsTreeSet_consultationClient) {
+//            tempsSet_consultationClient.add(r.getCalculTemps());
+//            taillesN_consultationClient.add(r.getTaille());
+//        }
+//        for (ResultatBenchmark r : resultatsTreeMap_consultationClient) {
+//            tempsMap_consultationClient.add(r.getCalculTemps());
+//        }
+//
+//        SwingUtilities.invokeLater(() -> {
+//            new Graphe(tempsSet_consultationClient, tempsMap_consultationClient, taillesN_consultationClient, "Temps : Scénario 2 - Consultation Client", "Temps (ms)").setVisible(true);
+//        });
 
 
         //GRAPHE 3 - TRADING -------------------------------------------------------------------------------------------
-        ArrayList<Double> tempsSet_trading = new ArrayList<>();
-        ArrayList<Double> tempsMap_trading = new ArrayList<>();
-        ArrayList<Integer> taillesN_trading = new ArrayList<>();
-
-        for (ResultatBenchmark r : resultatsTreeSet_trading) {
-            tempsSet_trading.add(r.getCalculTemps());
-            taillesN_trading.add(r.getTaille());
-        }
-        for (ResultatBenchmark r : resultatsTreeMap_trading) {
-            tempsMap_trading.add(r.getCalculTemps());
-        }
-
-        SwingUtilities.invokeLater(() -> {
-            new Graphe(tempsSet_trading, tempsMap_trading, taillesN_trading, "Scénario 3 - Trading", "Temps (ms)").setVisible(true);
-        });
+//        ArrayList<Double> tempsSet_trading = new ArrayList<>();
+//        ArrayList<Double> tempsMap_trading = new ArrayList<>();
+//        ArrayList<Integer> taillesN_trading = new ArrayList<>();
+//
+//        for (ResultatBenchmark r : resultatsTreeSet_trading) {
+//            tempsSet_trading.add(r.getCalculTemps());
+//            taillesN_trading.add(r.getTaille());
+//        }
+//        for (ResultatBenchmark r : resultatsTreeMap_trading) {
+//            tempsMap_trading.add(r.getCalculTemps());
+//        }
+//
+//        SwingUtilities.invokeLater(() -> {
+//            new Graphe(tempsSet_trading, tempsMap_trading, taillesN_trading, "Scénario 3 - Trading", "Temps (ms)").setVisible(true);
+//        });
 
 
 
